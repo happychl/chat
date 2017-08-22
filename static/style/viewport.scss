@@ -1,0 +1,52 @@
+// media
+@mixin max-screen($res) {
+  @media only screen and (max-width: $res) {
+    @content
+  }
+}
+
+@mixin min-screen($res) {
+  @media only screen and (min-width: $res) {
+    @content
+  }
+}
+
+@mixin max-min-screen($max,$min) {
+  @media only screen and (max-width: $max) and (min-width: $min) {
+    @content
+  }
+}
+
+// iphone 5(320)
+@include max-screen(359px) {
+  html {
+    font-size: 12px
+  }
+}
+
+// iphone 6(375)
+@include max-min-screen(413px, 360px) {
+  html {
+    font-size: 14px
+  }
+}
+
+// iphone 6P(414)
+@include max-min-screen(499px, 414px) {
+  html {
+    font-size: 15.5px;
+  }
+}
+
+// ipad(768)
+@include max-min-screen(768px, 500px) {
+  html {
+    font-size: 28px;
+  }
+}
+
+@include min-screen(769px) {
+  html {
+    font-size: 28px;
+  }
+}

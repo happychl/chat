@@ -1,0 +1,6 @@
+$baseSize: 12;
+
+@function p2r($px) {
+  @return $px/$baseSize*1rem;
+}
+
