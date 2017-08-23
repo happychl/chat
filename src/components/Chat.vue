@@ -46,7 +46,7 @@
 <script>
   import {mapState, mapMutations} from 'vuex'
 
-  let socket = io.connect('http://localhost:3000');
+  let socket = null;
 
   export default {
     name: 'chat',
@@ -61,6 +61,8 @@
       if (!this.$store.state.remember) {
         this.$router.push({path: '/'});
       } else {
+        socket = io.connect('http://192.168.0.180:3000');
+
         socket.on('connect', () => {
           console.log('连接服务器成功')
           console.log(`发送用户名:${this.$store.state.username}`)
@@ -74,9 +76,9 @@
         });
         socket.on('message', msg => {
           console.log(`收到消息:${msg}`)
-          if(msg.type===1){
+          if (msg.type === 1) {
             msg.self = msg.id && msg.id === this.$data.id;
-            msg.avatar=msg.id=='1001'?'../../static/image/avatar/robot.jpg':msg.avatar;
+            msg.avatar = msg.id == '1001' ? '../../static/image/avatar/robot.jpg' : msg.avatar;
           }
           this.$data.messages.push(msg);
         });
@@ -110,7 +112,7 @@
       send: function () {
         if (this.$data.sendTxt.length) {
           var msg = {
-            type:1,
+            type: 1,
             name: this.$store.state.username,
             text: this.$data.sendTxt,
             avatar: this.$store.state.avatar,
@@ -172,6 +174,14 @@
           }
         }
       }
+    }
+    &__tip{
+      width: 60%;
+      margin: auto;
+      line-height: 1.5;
+      text-align: center;
+      border-radius: 10px;
+      background-color: #ddd;
     }
     &__info {
       font-size: p2r(12);
