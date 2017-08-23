@@ -5,7 +5,7 @@
       <ul class="message__list">
         <template v-for="msg in messages">
           <li class="message__item" v-if="msg.type===0">
-            <p class="message__tip">欢迎&ensp;{{msg.name}}&ensp;进入聊天室</p>
+            <p class="message__tip">{{msg.text}}</p>
           </li>
           <li class="message__item" :class="{'self':msg.self}" v-else>
             <p class="message__info">
@@ -62,16 +62,22 @@
         this.$router.push({path: '/'});
       } else {
         socket.on('connect', () => {
-          console.log('connect server')
+          console.log('连接服务器成功')
+          console.log(`发送用户名:${this.$store.state.username}`)
           socket.emit('userInfo', {
             name: this.$store.state.username
           })
         });
         socket.on('userId', res => {
+          console.log(`收到用户ID:${res.userId}`)
           this.$data.id = res.userId
         });
         socket.on('message', msg => {
-          msg.self = msg.id && msg.id === this.$data.id;
+          console.log(`收到消息:${msg}`)
+          if(msg.type===1){
+            msg.self = msg.id && msg.id === this.$data.id;
+            msg.avatar=msg.id=='1001'?'../../static/image/avatar/robot.jpg':msg.avatar;
+          }
           this.$data.messages.push(msg);
         });
       }
@@ -104,6 +110,7 @@
       send: function () {
         if (this.$data.sendTxt.length) {
           var msg = {
+            type:1,
             name: this.$store.state.username,
             text: this.$data.sendTxt,
             avatar: this.$store.state.avatar,
@@ -111,6 +118,7 @@
           };
 
           this.$data.sendTxt = '';
+          console.log(`发送消息:${msg}`);
           socket.emit('message', msg);
         }
       }
